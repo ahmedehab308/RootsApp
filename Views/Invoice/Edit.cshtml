@@ -1,0 +1,80 @@
+﻿@model RootsApp.Models.Invoice
+
+@{
+    ViewData["Title"] = "Edit Invoice";
+    var invoiceDetailsList = Model.InvoiceDetails.ToList(); 
+}
+
+<h2>Edit Invoice</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="detailsTable">
+            @for (int i = 0; i < invoiceDetailsList.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="text" name="InvoiceDetails[@i].Product" value="@invoiceDetailsList[i].Product" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="number" name="InvoiceDetails[@i].Quantity" value="@invoiceDetailsList[i].Quantity"
+                               class="form-control" oninput="updateSubtotal(this)" />
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" name="InvoiceDetails[@i].Price" value="@invoiceDetailsList[i].Price"
+                               class="form-control" oninput="updateSubtotal(this)" />
+                    </td>
+                    <td>
+                        @((invoiceDetailsList[i].Quantity * invoiceDetailsList[i].Price).ToString("C"))
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary" onclick="addRow()">➕ Add Row</button>
+    <br /><br />
+    <button type="submit" class="btn btn-success">💾 Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">🔙 Back</a>
+</form>
+
+@section Scripts {
+    <script>
+        function removeRow(button) {
+            button.closest('tr').remove();
+        }
+
+        function addRow() {
+            var table = document.getElementById("detailsTable");
+            var rowCount = table.rows.length;
+            var row = table.insertRow();
+            row.innerHTML = `
+                <td><input name="InvoiceDetails[${rowCount}].Product" class="form-control" /></td>
+                <td><input name="InvoiceDetails[${rowCount}].Quantity" type="number" class="form-control" /></td>
+                <td><input name="InvoiceDetails[${rowCount}].Price" type="number" step="0.01" class="form-control" /></td>
+                <td>0.00</td>
+                <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+            `;
+        }
+        function updateSubtotal(input) {
+            var row = input.parentElement.parentElement;
+            var qty = row.children[1].children[0].value || 0;
+            var price = row.children[2].children[0].value || 0;
+            row.children[3].innerHTML = '$' + (qty * price).toFixed(2);
+        }
+    </script>
+}

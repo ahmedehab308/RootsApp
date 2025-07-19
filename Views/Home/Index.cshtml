@@ -1,0 +1,144 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<link rel="stylesheet" href="~/css/homepage.css" />
+
+<div class="hero-section">
+    <div class="floating-elements"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="welcome-card text-center">
+                    <h1 class="display-2 gradient-text mb-4">Welcome to InvoiceHub</h1>
+                    <p class="lead mb-5 section-subtitle">
+                        Smart invoice management system designed for modern businesses
+                    </p>
+
+                    <!-- Authentication Links -->
+                    <div class="auth-section mb-5">
+                        <a href="/auth/Login" class="btn btn-smart btn-primary-smart">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                        <a href="/auth/Register" class="btn btn-smart btn-secondary-smart">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </a>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Invoice Management Link -->
+                    <div>
+                        <a class="btn btn-smart btn-outline-smart" asp-area="" asp-controller="invoice" asp-action="Index">
+                            <i class="fas fa-file-invoice"></i> Manage Invoices
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-number">99.9%</div>
+                    <h5 class="stat-label">Uptime</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-number">10K+</div>
+                    <h5 class="stat-label">Active Users</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-number">50M+</div>
+                    <h5 class="stat-label">Invoices Processed</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="feature-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title gradient-text">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to manage your business efficiently</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h4 class="mb-3">Lightning Fast</h4>
+                <p class="feature-text">
+                    Generate and process invoices in seconds with our optimized workflow engine
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h4 class="mb-3">Smart Analytics</h4>
+                <p class="feature-text">
+                    Get actionable insights with AI-powered analytics and forecasting tools
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4 class="mb-3">Enterprise Security</h4>
+                <p class="feature-text">
+                    Bank-grade security with end-to-end encryption and compliance standards
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4 class="mb-3">Mobile Ready</h4>
+                <p class="feature-text">
+                    Access your invoices anywhere with our responsive design and mobile apps
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <h4 class="mb-3">API Integration</h4>
+                <p class="feature-text">
+                    Seamlessly connect with your existing tools via our comprehensive REST API
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h4 class="mb-3">24/7 Support</h4>
+                <p class="feature-text">
+                    Get help when you need it with our dedicated support team and documentation
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome & Google Fonts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">

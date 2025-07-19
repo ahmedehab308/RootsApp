@@ -1,0 +1,39 @@
+﻿@model RootsApp.Models.Invoice
+
+@{
+    ViewData["Title"] = "Invoice Details";
+}
+
+<h2>Invoice Details</h2>
+
+<div class="mb-3">
+    <strong>Invoice ID:</strong> @Model.Id<br />
+    <strong>Date:</strong> @Model.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")<br />
+    <strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")
+</div>
+
+<h4>Invoice Items</h4>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price (each)</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.InvoiceDetails)
+        {
+            <tr>
+                <td>@item.Product</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@((item.Quantity * item.Price).ToString("C"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/Invoice/Index" class="btn btn-secondary">🔙 Back to List</a>

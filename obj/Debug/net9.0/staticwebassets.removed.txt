@@ -1,0 +1,2 @@
+D:\ITI\task\RootsApp\RootsApp\wwwroot\css\login.css
+D:\ITI\task\RootsApp\RootsApp\wwwroot\css\register.css

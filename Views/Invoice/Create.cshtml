@@ -1,0 +1,231 @@
+﻿@model RootsApp.Models.Invoice
+@{
+    ViewData["Title"] = "Create New Invoice";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-file-invoice"></i> Create New Invoice</h3>
+        </div>
+        <div class="card-body">
+            <!-- Display validation errors -->
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@error.ErrorMessage</div>
+                    }
+                </div>
+            }
+
+            <form asp-action="Create" method="post" id="invoiceForm">
+                @Html.AntiForgeryToken()
+
+                <!-- Invoice Info -->
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Date:</label>
+                        <input type="text" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" readonly />
+                    </div>
+                </div>
+
+                <!-- Product Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="invoiceTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th width="40%">Product</th>
+                                <th width="15%">Quantity</th>
+                                <th width="20%">Price</th>
+                                <th width="20%">Total</th>
+                                <th width="5%">
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addRow()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceBody">
+                            <!-- First Row -->
+                            <tr class="item-row">
+                                <td>
+                                    <input name="InvoiceDetails[0].Product" class="form-control" placeholder="Product Name" required />
+                                </td>
+                                <td>
+                                    <input name="InvoiceDetails[0].Quantity" type="number" min="1" class="form-control quantity-input" placeholder="Quantity" required />
+                                </td>
+                                <td>
+                                    <input name="InvoiceDetails[0].Price" type="number" min="0.01" step="0.01" class="form-control price-input" placeholder="Price" required />
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control total-cell" readonly />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)" disabled>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <td colspan="3" class="text-end"><strong>Grand Total:</strong></td>
+                                <td><input type="text" id="grandTotal" class="form-control" readonly /></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Actions -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Save Invoice
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let rowIndex = 1;
+
+        function addRow() {
+            const tbody = document.getElementById("invoiceBody");
+            const newRow = document.createElement("tr");
+            newRow.className = "item-row";
+
+            newRow.innerHTML = `
+                <td>
+                    <input name="InvoiceDetails[${rowIndex}].Product" class="form-control" placeholder="Product Name" required />
+                </td>
+                <td>
+                    <input name="InvoiceDetails[${rowIndex}].Quantity" type="number" min="1" class="form-control quantity-input" placeholder="Quantity" required />
+                </td>
+                <td>
+                    <input name="InvoiceDetails[${rowIndex}].Price" type="number" min="0.01" step="0.01" class="form-control price-input" placeholder="Price" required />
+                </td>
+                <td>
+                    <input type="text" class="form-control total-cell" readonly />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(newRow);
+            rowIndex++;
+            updateRowIndices();
+            updateDeleteButtons();
+        }
+
+        function removeRow(button) {
+            const row = button.closest("tr");
+            row.remove();
+            updateRowIndices();
+            updateDeleteButtons();
+            calculateGrandTotal();
+        }
+
+        function updateRowIndices() {
+            const rows = document.querySelectorAll("#invoiceBody .item-row");
+            rows.forEach((row, index) => {
+                const inputs = row.querySelectorAll("input");
+                inputs[0].name = `InvoiceDetails[${index}].Product`;
+                inputs[1].name = `InvoiceDetails[${index}].Quantity`;
+                inputs[2].name = `InvoiceDetails[${index}].Price`;
+            });
+            rowIndex = rows.length;
+        }
+
+        function updateDeleteButtons() {
+            const deleteButtons = document.querySelectorAll("#invoiceBody button[onclick*='removeRow']");
+            deleteButtons.forEach((btn, index) => {
+                btn.disabled = deleteButtons.length === 1;
+            });
+        }
+
+        function calculateRowTotal(row) {
+            const quantityInput = row.querySelector(".quantity-input");
+            const priceInput = row.querySelector(".price-input");
+            const totalCell = row.querySelector(".total-cell");
+
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const price = parseFloat(priceInput.value) || 0;
+            const total = quantity * price;
+
+            totalCell.value = total.toFixed(2);
+        }
+
+        function calculateGrandTotal() {
+            let grandTotal = 0;
+            document.querySelectorAll(".total-cell").forEach(cell => {
+                grandTotal += parseFloat(cell.value) || 0;
+            });
+            document.getElementById("grandTotal").value = grandTotal.toFixed(2);
+        }
+
+        document.addEventListener("input", function(e) {
+            if (e.target.matches(".quantity-input") || e.target.matches(".price-input")) {
+                const row = e.target.closest("tr");
+                calculateRowTotal(row);
+                calculateGrandTotal();
+            }
+        });
+
+        document.getElementById("invoiceForm").addEventListener("submit", function(e) {
+            let hasValidRow = false;
+            const rows = document.querySelectorAll("#invoiceBody .item-row");
+
+            rows.forEach(row => {
+                const product = row.querySelector("input[name*='Product']").value.trim();
+                const quantity = row.querySelector("input[name*='Quantity']").value;
+                const price = row.querySelector("input[name*='Price']").value;
+
+                if (product && quantity && price && quantity > 0 && price > 0) {
+                    hasValidRow = true;
+                }
+            });
+
+            if (!hasValidRow) {
+                e.preventDefault();
+                alert("Please add at least one valid product row.");
+                return false;
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            updateDeleteButtons();
+            calculateGrandTotal();
+        });
+    </script>
+
+    <style>
+        .item-row input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        .total-cell {
+            background-color: #f8f9fa !important;
+            font-weight: bold;
+        }
+
+        #grandTotal {
+            background-color: #e9ecef !important;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
+}

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<RootsApp.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Invoices";
+}
+
+<h2>Invoices</h2>
+
+<a class="btn btn-primary mb-3" href="/Invoice/Create">➕ New Invoice</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            @* <th>Invoice ID</th> *@
+            <th>Total Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var invoice in Model)
+        {
+            <tr>
+                @* <td>@invoice.Id</td> *@
+                <td>@invoice.TotalAmount.ToString("C")</td>
+                <td>@invoice.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm")</td>
+
+                <td>
+                    <a class="btn btn-sm btn-info" href="/Invoice/Details/@invoice.Id">View</a>
+                    <a class="btn btn-sm btn-warning" href="/Invoice/Edit/@invoice.Id">Edit</a>
+
+                    <form asp-action="Delete" asp-route-id="@invoice.Id" method="get" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        var userId = '@ViewBag.UserId';
+        console.log("UserId from session:", userId);
+    </script>
+}
